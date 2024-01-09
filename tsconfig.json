@@ -6,9 +6,11 @@
     "outDir": "output",
     "target": "ES6",
     "lib": ["ES6", "DOM"],
-    "types": [],
+    "jsx": "react-jsx",
+    "jsxImportSource": "x",
+    "typeRoots": ["node_modules/@types", "shims/@types"],
     "moduleResolution": "Bundler"
   },
 
-  "files": ["index.ts"]
+  "files": ["index.tsx"]
 }

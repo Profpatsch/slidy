@@ -13,7 +13,7 @@ rule copy-decide
 rule tsc
   command = node_modules/.bin/tsc
 
-build $outdir/index.js: tsc | index.ts
+build $outdir/index.js: tsc | index.tsx tsconfig.json
 
 build $outdir/slides.sqlite: copy slides.sqlite
 
@@ -21,6 +21,7 @@ rule serve
   command = python3 -m http.server --directory $directory $port
 
 build $jsdir/sql.js: copy shims/sql.js
+build $jsdir/jsx-runtime.js: copy shims/jsx-runtime.js
 
 build $outdir/index.html: copy index.html
 
@@ -36,7 +37,7 @@ build $jsdir/sqlite.wasm: copy-decide | build-rules/copy-decide.execline build-r
   debugFile = node_modules/sql.js/dist/sql-wasm-debug.wasm
   releaseFile = node_modules/sql.js/dist/sql-wasm.wasm
 
-build serve: serve | $outdir/index.html $outdir/slides.sqlite $outdir/index.js $jsdir/sql.js $jsdir/sqlite.js $jsdir/sqlite.wasm
+build serve: serve | $outdir/index.html $outdir/slides.sqlite $outdir/index.js $jsdir/sql.js $jsdir/jsx-runtime.js $jsdir/sqlite.js $jsdir/sqlite.wasm
   pool = console
   port = 8080
   directory = output
