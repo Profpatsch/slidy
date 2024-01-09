@@ -1,0 +1,20 @@
+{
+  "name": "slidy",
+  "version": "0.0.1",
+  "description": "OpenLab Augsburg window slide show",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "sql.js": "^1.9.0"
+  },
+  "devDependencies": {
+    "@types/sql.js": "^1.4.9",
+    "esbuild": "0.19.11",
+    "typescript": "^5.3.3",
+    "undici-types": "^6.3.0"
+  }
+}

@@ -1,0 +1,44 @@
+
+builddir = .ninja
+
+outdir = ./output
+jsdir = $outdir/js
+
+rule copy
+  command = cp $in $out
+
+rule copy-decide
+  command = execlineb $script $isDebugFile $debugFile $releaseFile $out
+
+rule tsc
+  command = node_modules/.bin/tsc
+
+build $outdir/index.js: tsc | index.ts
+
+build $outdir/slides.sqlite: copy slides.sqlite
+
+rule serve
+  command = python3 -m http.server --directory $directory $port
+
+build $jsdir/sql.js: copy shims/sql.js
+
+build $outdir/index.html: copy index.html
+
+build $jsdir/sqlite.js: copy-decide | build-rules/copy-decide.execline build-rules/isDebug node_modules/sql.js/dist/sql-wasm.js node_modules/sql.js/dist/sql-wasm-debug.js
+  script = build-rules/copy-decide.execline
+  isDebugFile = build-rules/isDebug
+  debugFile = node_modules/sql.js/dist/sql-wasm-debug.js
+  releaseFile = node_modules/sql.js/dist/sql-wasm.js
+
+build $jsdir/sqlite.wasm: copy-decide | build-rules/copy-decide.execline build-rules/isDebug node_modules/sql.js/dist/sql-wasm.wasm node_modules/sql.js/dist/sql-wasm-debug.wasm
+  script = build-rules/copy-decide.execline
+  isDebugFile = build-rules/isDebug
+  debugFile = node_modules/sql.js/dist/sql-wasm-debug.wasm
+  releaseFile = node_modules/sql.js/dist/sql-wasm.wasm
+
+build serve: serve | $outdir/index.html $outdir/slides.sqlite $outdir/index.js $jsdir/sql.js $jsdir/sqlite.js $jsdir/sqlite.wasm
+  pool = console
+  port = 8080
+  directory = output
+
+default serve

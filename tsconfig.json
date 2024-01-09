@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "module": "ES2022",
+    "sourceMap": true,
+    "outDir": "output",
+    "target": "ES6",
+    "lib": ["ES6", "DOM"],
+    "types": [],
+    "moduleResolution": "Bundler"
+  },
+
+  "files": ["index.ts"]
+}

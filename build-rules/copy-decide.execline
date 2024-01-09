@@ -1,0 +1,16 @@
+ multisubstitute {
+    importas isDebugFile 1
+    importas debugFile 2
+    importas releaseFile 3
+    importas outFile 4
+}
+backtick isDebug { redirfd -r 0 $isDebugFile sed "s/[[:space:]]//g" }
+importas isDebug isDebug
+ifelse
+{ eltest $isDebug = true }
+{
+    if { echo "copying debug file" $debugFile }
+    cp $debugFile $outFile
+}
+if { echo "copying release file" $releaseFile }
+cp $releaseFile $outFile
