@@ -1,6 +1,41 @@
-import initSqlJs from "sql.js";
+import initSqlJs, { Database } from "sql.js";
 
 export async function main() {
+  const db = await loadDb();
+
+  let _ = await measure("select from slides", () => {
+    let table = (content: Element[]) => (
+      <>
+        <table>
+          <thead>
+            <td>Type</td>
+            abc
+          </thead>
+          <tbody>{content}</tbody>
+        </table>
+        <div>mydiv</div>
+        <button disabled>mybutton</button>
+      </>
+    );
+    let s = db.prepare("SELECT type from slides;");
+    let tableContent = [];
+    while (s.step()) {
+      let r = s.getAsObject() as { type: string };
+      let td = <td>{r.type}</td>;
+      tableContent.push(td);
+    }
+    s.free();
+
+    let slides = document.getElementById("slides");
+    if (slides) {
+      slides.innerHTML = "";
+      slides.appendChild(table(tableContent));
+    }
+    return Promise.resolve(null);
+  });
+}
+
+async function loadDb(): Promise<Database> {
   const SQL = await measure("loading sqlite library", () =>
     initSqlJs({
       locateFile: (url, scriptDirectory) => {
@@ -18,35 +53,9 @@ export async function main() {
     })
   );
 
-  const db = await measure("loading sqlite file", async () => {
+  return await measure("loading sqlite file", async () => {
     const dbFile = await fetch("./slides.sqlite");
     return new SQL.Database(new Uint8Array(await dbFile.arrayBuffer()));
-  });
-
-  let _ = await measure("select from slides", () => {
-    let s = db.prepare("SELECT type from slides;");
-    let table = (content: Element[]) => (
-      <table>
-        <thead>
-          <td>Type</td>
-        </thead>
-        <tbody>{content}</tbody>
-      </table>
-    );
-    let tableContent = [];
-    while (s.step()) {
-      let r = s.getAsObject() as { type: string };
-      let td = <td>{r.type}</td>;
-      tableContent.push(td);
-    }
-    s.free();
-
-    let slides = document.getElementById("slides");
-    if (slides) {
-      slides.innerHTML = "";
-      slides.appendChild(table(tableContent));
-    }
-    return Promise.resolve(null);
   });
 }
 
