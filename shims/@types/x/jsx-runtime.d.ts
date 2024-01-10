@@ -4,6 +4,6 @@ type ElementShadow = Element;
 export declare namespace JSX {
   type Element = ElementShadow;
   interface IntrinsicElements {
-    [elemName: string]: Record<string, string>;
+    [elemName: string]: Record<string, string | boolean>;
   }
 }
